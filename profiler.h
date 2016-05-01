@@ -82,44 +82,7 @@ UINT64 NU_Get_Time_Stamp()
 #define TICKS_PER_MSEC 2823
 #define DEBUG_LEVELS 100
 
-#define PPO {\
-	int value = 0;\
-	int tabs = 0;\
-	int val = 0;\
-	int acc[DEBUG_LEVELS];\
-	while(1)\
-	{\
-		int result = cb_pop_front(&value);\
-		if(result == -1)\
-			break;\
-		if(tabs == 0)\
-		{\
-			for(int i=0;i<DEBUG_LEVELS;i++)\
-				acc[i] = 0;\
-		}\
-		if(value == 0)\
-		{\
-			if(val==1)\
-				for(int i=0;i<tabs-1;i++)\
-					printf("---");\
-			cb_pop_front(&value);\
-			acc[tabs] = acc[tabs] + value;\
-			printf("%.1f ms (%.1f ms)\n",value/float(TICKS_PER_MSEC),acc[tabs]/float(TICKS_PER_MSEC));\
-			val=1;\
-			tabs--;\
-		}\
-		else\
-		{\
-			if(val == 0)\
-				printf("\n");\
-			val=0;\
-			for(int i=0;i<tabs;i++)\
-				printf("---");\
-			printf("%s  ",value);\
-			tabs++;\
-		}\
-	}\
-}\
+
 
 #define SP(Tag) LARGE_INTEGER li##Tag; char *tag##Tag = #Tag; cb_push_back((int)tag##Tag); QueryPerformanceCounter(&li##Tag);
 #define EP(Tag) LARGE_INTEGER le##Tag; QueryPerformanceCounter(&le##Tag);cb_push_back((int)(li##Tag.QuadPart - le##Tag.QuadPart));
@@ -134,7 +97,7 @@ UINT64 NU_Get_Time_Stamp()
 	int tab = 0;\
 	while(cb_pop_front(&value) != -1)\
 	{\
-		if(value < 0)\
+		if(value <= 0)\
 		{\
 			tab--;\
 			for(int i=0;i<tab;i++)\
